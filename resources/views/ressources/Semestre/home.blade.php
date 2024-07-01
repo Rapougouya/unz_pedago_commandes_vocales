@@ -265,6 +265,7 @@
 
     const recognition = new webkitSpeechRecognition();
     recognition.lang = 'fr-FR';
+
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript.toLowerCase().trim();
         console.log("Transcript:", transcript);
@@ -281,57 +282,65 @@
         });
 
         // Ajouter les nouvelles conditions ici
-        if (transcript.includes('nouveau programme')) {
+        if (transcript.includes("créer un semestre") || transcript.includes("creer un semestre")) {
+            console.log("Redirection vers la création de semestre...");
+            recognition.stop();
+            window.location.href = "{{ route('semestres.create') }}";
+        } else if (transcript.includes('nouveau programme')) {
             window.location.href = '#';
         } else if (transcript.includes('module')) {
-            window.location.href = '{{route('rehome')}}';
+            recognition.stop();
+            window.location.href = '{{ route('rehome') }}';
         } else if (transcript.includes('filière')) {
-            window.location.href = '{{route('filieres.index')}}';
+            recognition.stop();
+            window.location.href = '{{ route('filieres.index') }}';
         } else if (transcript.includes('u_e_s')) {
-            window.location.href = '{{route('ues.index')}}';
+            recognition.stop();
+            window.location.href = '{{ route('ues.index') }}';
         } else if (transcript.includes('u_f_r')) {
-            window.location.href = '{{route('ufrs.index')}}';
+            recognition.stop();
+            window.location.href = '{{ route('ufrs.index') }}';
         } else if (transcript.includes('semestre')) {
-            window.location.href = '{{route('semestres.index')}}';
+            recognition.stop();
+            window.location.href = '{{ route('semestres.index') }}';
         } else if (transcript.includes('bâtiment')) {
-            window.location.href = '{{route('homebat')}}';
+            recognition.stop();
+            window.location.href = '{{ route('homebat') }}';
         } else if (transcript.includes('salle')) {
-            window.location.href = '{{route('salle.index')}}';
+            recognition.stop();
+            window.location.href = '{{ route('salle.index') }}';
         } else if (transcript.includes('utilisateur')) {
-            window.location.href = '{{route('afficheuser')}}';
+            recognition.stop();
+            window.location.href = '{{ route('afficheuser') }}';
         }
 
-        if (transcript.includes("créer un module") || transcript.includes("creer un module")) {
-            console.log("Redirection vers la création de module...");
-            window.location.href = "{{ route('mod') }}";
-        }
-
-        if (transcript.includes("modifier le module") || transcript.includes("modifier module") || transcript.includes("modifier m")) {
-            const { moduleName, filiereName } = extractModuleAndFiliere(transcript, "modifier");
-            console.log("Extracted:", { moduleName, filiereName });
-            if (moduleName && filiereName) {
-                const moduleId = findModuleIdByName(moduleName, filiereName);
-                if (moduleId) {
-                    console.log("Redirection vers la modification de module...");
-                    window.location.href = `/modules/${moduleId}/edit`;
+        if (transcript.includes("modifier le semestre") || transcript.includes("modifier semestre") || transcript.includes("modifier s")) {
+            const { semestreName, filiereName } = extractSemestreAndFiliere(transcript, "modifier");
+            console.log("Extracted:", { semestreName, filiereName });
+            if (semestreName && filiereName) {
+                const semestreId = findSemestreIdByName(semestreName, filiereName);
+                if (semestreId) {
+                    console.log("Redirection vers la modification de semestre...");
+                    recognition.stop();
+                    window.location.href = `/semestres/${semestreId}/edit`;
                 } else {
-                    console.log("Module ou filière introuvable.");
-                    alert("Module ou filière introuvable.");
+                    console.log("Semestre ou filière introuvable.");
+                    alert("Semestre ou filière introuvable.");
                 }
             }
         }
 
-        if (transcript.includes("supprimer le module") || transcript.includes("supprimer module") || transcript.includes("supprimer m")) {
-            const { moduleName, filiereName } = extractModuleAndFiliere(transcript, "supprimer");
-            console.log("Extracted for deletion:", { moduleName, filiereName });
-            if (moduleName && filiereName) {
-                const moduleId = findModuleIdByName(moduleName, filiereName);
-                if (moduleId) {
-                    console.log("Confirmation et suppression du module...");
-                    confirmAndDeleteModule(moduleId);
+        if ( transcript.includes("supprimer le semestre") || transcript.includes("supprimer semestre") || transcript.includes("supprimer s")) {
+            const { semestreName, filiereName } = extractSemestreAndFiliere(transcript, "supprimer");
+            console.log("Extracted for deletion:", { semestreName, filiereName });
+            if (semestreName && filiereName) {
+                const semestreId = findSemestreIdByName(semestreName, filiereName);
+                if (semestreId) {
+                    console.log("Confirmation et suppression du semestre...");
+                    confirmAndDeleteSemestre(semestreId);
                 } else {
-                    console.log("Module ou filière introuvable pour suppression.");
-                    alert("Module ou filière introuvable.");
+                    console.log("Semestre ou filière introuvable pour suppression.");
+                    alert("Semestre ou filière introuvable.");
                 }
             }
         }
@@ -373,37 +382,37 @@
         return removeAccents(name.trim().toUpperCase());
     }
 
-    function findModuleIdByName(moduleName, filiereName) {
-        const modules = document.querySelectorAll("tbody tr");
-        moduleName = normalizeName(moduleName);
+    function findSemestreIdByName(semestreName, filiereName) {
+        const semestres = document.querySelectorAll("tbody tr");
+        semestreName = normalizeName(semestreName);
         filiereName = normalizeName(filiereName);
-        for (let i = 0; i < modules.length; i++) {
-            const module = modules[i];
-            const moduleNom = normalizeName(module.querySelector("td:nth-child(2)").textContent);
-            const moduleFiliere = normalizeName(module.closest(".module-card").querySelector("h5").textContent);
-            console.log("Comparing:", { moduleNom, moduleFiliere, moduleName, filiereName });
-            if (moduleNom.includes(moduleName) && moduleFiliere.includes(filiereName)) {
-                return module.querySelector("td:first-child").textContent;
+        for (let i = 0; i < semestres.length; i++) {
+            const semestre = semestres[i];
+            const semestreNom = normalizeName(semestre.querySelector("td:nth-child(2)").textContent);
+            const semestreFiliere = normalizeName(semestre.closest(".semestre-card").querySelector("h5").textContent);
+            console.log("Comparing:", { semestreNom, semestreFiliere, semestreName, filiereName });
+            if (semestreNom.includes(semestreName) && semestreFiliere.includes(filiereName)) {
+                return semestre.querySelector("td:first-child").textContent;
             }
         }
         return null;
     }
 
-    function extractModuleAndFiliere(transcript, action) {
-        const match = transcript.match(new RegExp(`${action}\\s+(module\\s+\\d+|m\\d+)\\s+pour\\s+(\\w+)`, 'i'));
+    function extractSemestreAndFiliere(transcript, action) {
+        const match = transcript.match(new RegExp(`${action}\\s+(semestre\\s+\\d+|s\\d+)\\s+pour\\s+(\\w+)`, 'i'));
         if (match) {
-            const moduleName = normalizeName(match[1]);
+            const semestreName = normalizeName(match[1]);
             const filiereName = normalizeName(match[2]);
-            return { moduleName, filiereName };
+            return { semestreName, filiereName };
         }
-        return { moduleName: null, filiereName: null };
+        return { semestreName: null, filiereName: null };
     }
 
-    function confirmAndDeleteModule(moduleId) {
-        if (confirm("Êtes-vous sûr de vouloir supprimer ce module ?")) {
+    function confirmAndDeleteSemestre(semestreId) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer ce semestre ?")) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = `/modules/${moduleId}`;
+            form.action = `/semestres/${semestreId}`;
             form.style.display = 'none';
 
             const methodInput = document.createElement('input');
@@ -426,7 +435,8 @@
     function logout() {
         window.location.href = "{{ route('connexion') }}";
     }
- });
+});
+
 </script>
 
 <script src="assets_private/vendors/base/vendor.bundle.base.js"></script>

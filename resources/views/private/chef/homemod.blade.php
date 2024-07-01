@@ -385,8 +385,7 @@
 
     recognition.start();
 });
-
-  
+ 
 </script>
    
 </body>
