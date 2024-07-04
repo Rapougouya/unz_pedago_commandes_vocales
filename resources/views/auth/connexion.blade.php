@@ -240,7 +240,7 @@
             recognition.onend = () => {
                 setTimeout(() => {
                     recognition.start();
-                }, 1000);
+                }, 10000);
             };
 
             recognition.start();
