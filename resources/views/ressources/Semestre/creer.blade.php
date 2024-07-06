@@ -30,10 +30,10 @@
 
     <script>
        const intituleInput = document.getElementById('intitule');
-const createForm = document.querySelector('form');
-const filiereInput = document.getElementById('filiere_id');
+       const createForm = document.querySelector('form');
+       const filiereInput = document.getElementById('filiere_id');
 
-function initSpeechRecognition() {
+  function initSpeechRecognition() {
     const recognition = new webkitSpeechRecognition();
     recognition.lang = 'fr-FR';
 

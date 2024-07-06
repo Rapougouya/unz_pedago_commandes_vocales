@@ -65,7 +65,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="#">
                             <i class="mdi mdi-application menu-icon"></i>
-                            <span class="menu-title">Nouveau Programme</span>
+                            <span class="menu-title">Programme</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -235,15 +235,15 @@
                         const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
                         console.log('Résultat de la reconnaissance vocale : ', transcript);
 
-                        if (transcript.includes('nouveau programme')) {
+                        if (transcript.includes('programme')) {
                             window.location.href = '#';
                         } else if (transcript.includes('module')) {
                             window.location.href = '{{route('rehome')}}';
                         } else if (transcript.includes('filière')) {
                             window.location.href = '{{route('filieres.index')}}';
-                        } else if (transcript.includes('u_e_s')) {
+                        } else if (transcript.includes('ues')) {
                             window.location.href = '{{route('ues.index')}}';
-                        } else if (transcript.includes('u_f_r')) {
+                        } else if (transcript.includes('ufr')) {
                             window.location.href = '{{route('ufrs.index')}}';
                         } else if (transcript.includes('semestre')) {
                             window.location.href = '{{route('semestres.index')}}';

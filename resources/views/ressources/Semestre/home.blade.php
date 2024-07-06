@@ -286,18 +286,18 @@
             console.log("Redirection vers la création de semestre...");
             recognition.stop();
             window.location.href = "{{ route('semestres.create') }}";
-        } else if (transcript.includes('nouveau programme')) {
-            window.location.href = '#';
+        } else if (transcript.includes('programme')) {
+            window.location.href = 'chef';
         } else if (transcript.includes('module')) {
             recognition.stop();
             window.location.href = '{{ route('rehome') }}';
         } else if (transcript.includes('filière')) {
             recognition.stop();
             window.location.href = '{{ route('filieres.index') }}';
-        } else if (transcript.includes('u_e_s')) {
+        } else if (transcript.includes('ues')) {
             recognition.stop();
             window.location.href = '{{ route('ues.index') }}';
-        } else if (transcript.includes('u_f_r')) {
+        } else if (transcript.includes('ufr')) {
             recognition.stop();
             window.location.href = '{{ route('ufrs.index') }}';
         } else if (transcript.includes('semestre')) {

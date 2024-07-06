@@ -71,7 +71,7 @@
             <li class="nav-item ">
                 <a class="nav-link" href="{{route('chef')}}">
                     <i class="mdi mdi-application menu-icon"></i>
-                    <span class="menu-title">Nouveau Programme</span>
+                    <span class="menu-title">Programme</span>
                 </a>
             </li>
               <li class="nav-item">

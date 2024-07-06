@@ -349,8 +349,8 @@
             console.log("Commande reconnue : créer un module");
             console.log("Redirection vers la création de module...");
             window.location.href = "{{ route('mod') }}";
-        } else if (transcript.includes('nouveau programme')) {
-            window.location.href = '#';
+        } else if (transcript.includes('programme')) {
+            window.location.href = 'chef';
         } else if (transcript.includes('module')) {
             window.location.href = '{{ route('rehome') }}';
         } else if (transcript.includes('filière')) {
@@ -373,6 +373,9 @@
         }
     };
 
+    if (transcript.includes("déconnexion") || transcript.includes("deconnexion")) {
+            logout();
+        }
     recognition.onerror = (event) => {
         console.error('Erreur de reconnaissance vocale:', event.error);
     };
@@ -384,6 +387,10 @@
     };
 
     recognition.start();
+
+    function logout() {
+        window.location.href = "{{ route('home') }}";
+    }
 });
  
 </script>
